@@ -1,18 +1,12 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
 // Create Date: 09/02/2023 11:17:23 AM
-// Design Name: 
+// Design Name: ALU
 // Module Name: alu
 // Project Name: ALU module
-// Target Devices: Basys3 board
+// Target Devices: Basys3 
 // Description:  Implementation of an arithmetic and logic unit in Verilog for the basys 3 board
-// Dependencies: 
-// Revision:
 // Revision 0.01 - File Created
-// Additional Comments:
 //////////////////////////////////////////////////////////////////////////////////
 
 
