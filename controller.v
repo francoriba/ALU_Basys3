@@ -3,43 +3,43 @@
 
 module controlador
 #(
-    //PARAMETROS
-    parameter           N_BITS_DATA = 8,
-    parameter           N_BITS_OP = 6,
+    //parameters
+    parameter           NB_DATA = 8,
+    parameter           NB_OPCODE = 6,
     parameter           N_PULSADORES = 3
 )
 (
-    input wire signed   [N_BITS_DATA-1:0]       i_switches,
+    input wire signed   [NB_DATA-1:0]       i_switches,
     input wire                                  i_clock,    
     input wire          [N_PULSADORES-1:0]      i_pulsadores,
     input wire                                  i_reset,
-    output wire signed  [N_BITS_DATA-1:0]       o_resultado
+    output wire signed  [NB_DATA-1:0]       o_result
 );
     
-    reg signed [N_BITS_DATA-1:0]   dato_A ;
-    reg signed [N_BITS_DATA-1:0]   dato_B ;
-    reg [N_BITS_OP-1:0]     operacion ;
+    reg signed [NB_DATA-1:0]   i_op_1 ;
+    reg signed [NB_DATA-1:0]   i_op_2 ;
+    reg [NB_OPCODE-1:0]     i_opcode ;
     
     always @(posedge i_clock)
     begin
         if(i_reset)
         begin
-            dato_A <= {N_BITS_DATA {1'b0}};
-            dato_B <= {N_BITS_DATA {1'b0}};
-            operacion <= {N_BITS_OP {1'b0}};
+            i_op_1 <= {NB_DATA {1'b0}};
+            i_op_2 <= {NB_DATA {1'b0}};
+            i_opcode <= {NB_OPCODE {1'b0}};
         end
         else
         begin
             case(i_pulsadores)//poner reset
-                {{N_PULSADORES-3 {1'b0}}, 3'b001}: dato_A <= i_switches;
-                {{N_PULSADORES-3 {1'b0}}, 3'b010}: dato_B <= i_switches;
-                {{N_PULSADORES-3 {1'b0}}, 3'b100}: operacion <= i_switches;
+                {{N_PULSADORES-3 {1'b0}}, 3'b001}: i_op_1 <= i_switches;
+                {{N_PULSADORES-3 {1'b0}}, 3'b010}: i_op_2 <= i_switches;
+                {{N_PULSADORES-3 {1'b0}}, 3'b100}: i_opcode <= i_switches;
                 
                 default: //por defecto quedan los datos anteriores
                 begin
-                    dato_A <= dato_A;
-                    dato_B <= dato_B;
-                    operacion <= operacion;
+                    i_op_1 <= i_op_1;
+                    i_op_2 <= i_op_2;
+                    i_opcode <= i_opcode;
                 end
                 endcase
         end
@@ -47,15 +47,15 @@ module controlador
     
     alu
     #(
-        .N_BITS_DATA    (N_BITS_DATA),
-        .N_BITS_OP      (N_BITS_OP)
+        .NB_DATA    (NB_DATA),
+        .NB_OPCODE      (NB_OPCODE)
     )
-    u_alu
+    dut
     (
-        .i_dato_A (dato_A),
-        .i_dato_B (dato_B),             
-        .i_operacion(operacion),
-        .o_resultado(o_resultado)
+        .i_op_1 (i_op_1),
+        .i_op_2 (i_op_2),             
+        .i_opcode(i_opcode),
+        .o_result(o_result)
     );
 endmodule
 

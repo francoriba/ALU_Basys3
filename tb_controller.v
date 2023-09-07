@@ -3,8 +3,8 @@
 module tb_controlador();
 
     //local parameters
-    localparam  N_BITS_DATA   = 8;
-    localparam  N_BITS_OP     = 6;
+    localparam  NB_DATA   = 8;
+    localparam  NB_OPCODE     = 6;
     localparam  N_PULSADORES  = 3;
     localparam  ADD = 6'b100000;
     localparam  SUB = 6'b100010;
@@ -21,22 +21,22 @@ module tb_controlador();
     reg                         clk;
     reg                         test_start;
     reg [1:0]                   i;
-    reg [N_BITS_OP * 10 -1:0]   codeOperacion;
+    reg [NB_OPCODE * 10 -1:0]   codeOperacion;
 
     //INPUTS
-    reg [N_BITS_DATA-1 : 0]     i_switches;
+    reg [NB_DATA-1 : 0]     i_switches;
     reg [N_PULSADORES-1 : 0]    i_pulsadores;
     reg                         i_reset;
 
     //OUTPUTS
-    wire [N_BITS_DATA-1 : 0] o_resultado;
+    wire [NB_DATA-1 : 0] o_result;
 
     initial begin
     #0
     clk = 1'b0;
     i = 2'b00;
     test_start = 1'b0;
-    i_switches = {N_BITS_DATA {1'b0}};
+    i_switches = {NB_DATA {1'b0}};
     i_pulsadores = {N_PULSADORES {1'b0}};
     i_reset = 1'b1;
     
@@ -54,8 +54,8 @@ module tb_controlador();
 
     controlador
     #(
-        .N_BITS_DATA    (N_BITS_DATA),
-        .N_BITS_OP      (N_BITS_OP),
+        .NB_DATA       (NB_DATA),
+        .NB_OPCODE      (NB_OPCODE),
         .N_PULSADORES   (N_PULSADORES)
     )
     u_controlador
@@ -63,7 +63,7 @@ module tb_controlador();
         .i_switches     (i_switches),
         .i_clock        (clk),
         .i_pulsadores   (i_pulsadores),
-        .o_resultado    (o_resultado),
+        .o_result       (o_result),
         .i_reset        (i_reset)
     );
 
@@ -101,7 +101,7 @@ module tb_controlador();
                 begin
                     //i_switches <= {2'b00, SUB};
                     //i_switches <= {2'b00, SRA};
-                    i_switches <= (codeOperacion >> (($urandom%10) * N_BITS_OP)) & {{N_BITS_DATA-N_BITS_OP {1'b0}}, {N_BITS_OP {1'b1}}};
+                    i_switches <= codeOperacion[($urandom % 10) * NB_OPCODE +: NB_OPCODE];
                     i_pulsadores <= i_pulsadores << 1'b1; //100
                     #1
                     $display("La operacion es: %b (%d)", i_switches, i_switches);
@@ -109,7 +109,7 @@ module tb_controlador();
             2'b11: //MUESTRO RESULTADO
                 begin 
                     #1
-                    $display("El resultado es: %b (%d)", o_resultado, $signed(o_resultado));
+                    $display("El resultado es: %b = %d = %hh ", o_result, $signed(o_result), o_result);
                     $display("----------------------------------------------------");
                 end
 
@@ -124,4 +124,4 @@ module tb_controlador();
         end
          
     end
-endmodule //tb_controlador
+endmodule 
