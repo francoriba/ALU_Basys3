@@ -31,7 +31,6 @@ module alu_tb;
     reg test_start;
     integer i, j; //counters
 
-
     // Generate test signals
     initial begin
 
@@ -75,7 +74,7 @@ module alu_tb;
               j <= j + {{NB_INTEGER-1 {1'b0}}, 1'b1}; //j++
             
               #1
-              $display("----------Iteracion n°%d----------", j);
+              $display("----------Iteration n°%d ----------", j);
               $display("A = %bb = %dd = %hh ", i_op_1, i_op_1, i_op_1);
               $display("B = %bb = %dd = %hh ", i_op_2, i_op_2, i_op_2);
             end
@@ -99,9 +98,9 @@ module alu_tb;
                   	$display("\t \t ALU output: %bb = %dd = %hh", o_result, o_result, o_result);
                     if(o_result != (i_op_1 + i_op_2))
                     begin
-                        $error("Error en la SUMA!");
-                        $display("############# Test FALLO ############");
-                        $display("El resultado fue %b cuando debio ser %b", o_result, i_op_1 + i_op_2);
+                        $error("Error in ADD!");
+                        $display("############# Test FAIL ############");
+                        $display("Result was %b and should be %b", o_result, i_op_1 + i_op_2);
                         $finish();
                     end
                 end
@@ -115,9 +114,9 @@ module alu_tb;
                   	$display("\t \t ALU output: %bb = %dd = %hh", o_result, o_result, o_result);
                     if(o_result != (i_op_1 - i_op_2))
                     begin
-                        $error("Error en la RESTA!");
-                        $display("############# Test FALLO ############");
-                        $display("El resultado fue %b cuando debio ser %b", o_result, i_op_1 - i_op_2);
+                        $error("Error in RESTA!");
+                        $display("############# Test FAIL ############");
+                        $display("Result was %b and should be %b", o_result, i_op_1 - i_op_2);
                         $finish();
                     end
                 end
@@ -131,9 +130,9 @@ module alu_tb;
                   	$display("\t \t ALU output: %bb = %dd = %hh", o_result, o_result, o_result);
                     if(o_result != (i_op_1 & i_op_2))
                     begin
-                        $error("Error en el AND!");
-                        $display("############# Test FALLO ############");
-                        $display("El resultado fue %b cuando debio ser %b", o_result, i_op_1 & i_op_2);
+                        $error("Error in AND!");
+                        $display("############# Test FAIL ############");
+                        $display("Result was %b and should be %b", o_result, i_op_1 & i_op_2);
                         $finish();
                     end
                 end
@@ -147,9 +146,9 @@ module alu_tb;
                   	$display("\t \t ALU output: %bb = %dd = %hh", o_result, o_result, o_result);
                     if(o_result != (i_op_1 |i_op_2))
                     begin
-                        $error("Error en el OR!");
-                        $display("############# Test FALLO ############");
-                        $display("El resultado fue %b cuando debio ser %b", o_result, i_op_1 | i_op_2);
+                        $error("Error in OR!");
+                        $display("############# Test FAIL ############");
+                        $display("Result was %b and should be %b", o_result, i_op_1 | i_op_2);
                         $finish();
                     end
                 end
@@ -163,9 +162,9 @@ module alu_tb;
                   	$display("\t \t ALU output: %bb = %dd = %hh", o_result, o_result, o_result);
                     if(o_result != (i_op_1 ^ i_op_2))
                     begin
-                        $error("Error en el XOR!");
-                        $display("############# Test FALLO ############");
-                        $display("El resultado fue %b cuando debio ser %b", o_result, i_op_1 ^ i_op_2);
+                        $error("Error in XOR!");
+                        $display("############# Test FAIL ############");
+                        $display("Result was %b and should be %b", o_result, i_op_1 ^ i_op_2);
                         $finish();
                     end
                 end
@@ -179,9 +178,9 @@ module alu_tb;
                   	$display("\t \t ALU output: %bb = %dd = %hh", o_result, o_result, o_result);
                     if(o_result != (i_op_1 >>> i_op_2))
                     begin
-                        $error("Error en el SRA!");
-                        $display("############# Test FALLO ############");
-                        $display("El resultado fue %b cuando debio ser %b", o_result, i_op_1 >>> i_op_2);
+                        $error("Error in SRA!");
+                        $display("############# Test FAIL ############");
+                        $display("Result was %b and should be %b", o_result, i_op_1 >>> i_op_2);
                         $finish();
                     end
                 end
@@ -195,9 +194,9 @@ module alu_tb;
                   	$display("\t \t ALU output: %bb = %dd = %hh", o_result, o_result, o_result);
                     if(o_result != (i_op_1 >> i_op_2))
                     begin
-                        $error("Error en el SRL!");
-                        $display("############# Test FALLO ############");
-                        $display("El resultado fue %b cuando debio ser %b", o_result, i_op_1 >> i_op_2);
+                        $error("Error in SRL!");
+                        $display("############# Test FAIL ############");
+                        $display("Result was %b and should be %b", o_result, i_op_1 >> i_op_2);
                         $finish();
                     end
                 end
@@ -211,9 +210,9 @@ module alu_tb;
                   	$display("\t \t ALU output: %bb = %dd = %hh", o_result, o_result, o_result);
                     if(o_result != ~(i_op_1 | i_op_2))
                     begin
-                        $error("Error en el NOR!");
-                        $display("############# Test FALLO ############");
-                        $display("El resultado fue %b cuando debio ser %b", o_result, ~(i_op_1 | i_op_2));
+                        $error("Error in NOR!");
+                        $display("############# Test FAIL ############");
+                        $display("Result was %b and should be %b", o_result, ~(i_op_1 | i_op_2));
                         $finish();
                     end
                 end
@@ -223,5 +222,4 @@ module alu_tb;
             endcase
         end
     end
-      
 endmodule
