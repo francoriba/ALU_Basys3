@@ -31,9 +31,9 @@ localparam  SRL = 6'b000010;
 localparam  NOR = 6'b100111;
 
 reg signed [NB_DATA-1 : 0] result; //register for storing result
-reg carry; //register for storing carry if needed
+//reg carry; //register for storing carry if needed
 assign o_result = result;
-assign o_carry = carry;
+//assign o_carry = carry;
 
 //reg [NB_DATA-1 : 0] i_op_1_r; //register for storing fisrt operand 
 //reg [NB_DATA-1 : 0] i_op_2_r; //register for storing second operand 

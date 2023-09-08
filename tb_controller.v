@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module tb_controlador();
+module tb_controller();
 
     //local parameters
     localparam  NB_DATA   = 8;
@@ -50,13 +50,13 @@ module tb_controlador();
     $finish;
     end // initial
 
-    controlador
+    controller
     #(
         .NB_DATA       (NB_DATA),
         .NB_OPCODE      (NB_OPCODE),
         .N_PULSADORES   (N_PULSADORES)
     )
-    u_controlador
+    u_controller
     (
         .i_switches     (i_switches),
         .i_clock        (clk),
@@ -84,7 +84,7 @@ module tb_controlador();
                     //i_switches <= 8'b11001100;
                     i_pulsadores <= {{N_PULSADORES-1 {1'b0}}, 1'b1}; //001
                     #1
-                    $display("El dato A es: %b (%d)", i_switches, $signed(i_switches)); 
+                    $display("El dato A es: %bb = %dd = %hh", i_switches, $signed(i_switches), i_switches); 
                 end
 
             2'b01: //CARGO B
@@ -93,7 +93,7 @@ module tb_controlador();
                     //i_switches <= 8'b11111110;
                     i_pulsadores <= i_pulsadores << 1'b1; //010
                     #1
-                    $display("El dato B es: %b (%d)", i_switches, $signed(i_switches));
+                    $display("El dato B es: %bb = %dd = %hh", i_switches, $signed(i_switches), i_switches);
                 end
             2'b10: //CARGO OP
                 begin
@@ -102,12 +102,12 @@ module tb_controlador();
                     i_switches <= codeOperacion[($urandom % 10) * NB_OPCODE +: NB_OPCODE];
                     i_pulsadores <= i_pulsadores << 1'b1; //100
                     #1
-                    $display("La operacion es: %b (%d)", i_switches, i_switches);
+                    $display("La operacion es: %bb = %dd = %hh", i_switches, i_switches, i_switches);
                 end
             2'b11: //MUESTRO RESULTADO
                 begin 
                     #1
-                    $display("El resultado es: %b = %d = %hh ", o_result, $signed(o_result), o_result);
+                    $display("El resultado es: %bb = %dd = %hh ", o_result, $signed(o_result), o_result);
                     $display("----------------------------------------------------");
                 end
 
