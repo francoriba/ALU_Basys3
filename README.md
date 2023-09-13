@@ -64,7 +64,7 @@ There are 4 cycles:
 * 3rd cycle: allocate opcode
 * 4th cycle: check result
 
-Using a new ``case'' condition, the value of the switches is randomly assigned and the "button pressed" is set depending on which cycle it is. For example, if the variable used as a counter has the value 1, then the value 001 is assigned to the button input variable and a random operand is set.
+Using a new ``case`` condition, the value of the switches is randomly assigned and the "button pressed" is set depending on which cycle it is. For example, if the variable used as a counter has the value 1, then the value 001 is assigned to the button input variable and a random operand is set.
 
 The figure below shows the time analysis of the simulation.
 ![](https://github.com/francoriba/ALU_Basys3/blob/main/docs/time_analysis.png)

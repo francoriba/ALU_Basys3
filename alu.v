@@ -43,7 +43,7 @@ assign o_result = result;
 always @(*)
 begin
     case (i_opcode)
-        ADD : {carry,result} = i_op_1 + i_op_2;    //ADD
+        ADD : result = i_op_1 + i_op_2;    //ADD
         SUB : result = i_op_1 - i_op_2;    //SUB
       	AND : result= i_op_1 & i_op_2;    //AND
         OR  : result = i_op_1 | i_op_2;    	//OR

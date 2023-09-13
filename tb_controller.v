@@ -68,17 +68,17 @@ module tb_controller();
     always #10 clk = ~clk;
 
     /*
-    1er ciclo: asigno dato A
-    2do ciclo: asigno dato B
-    3er ciclo: asigno operacion
-    4to ciclo: chequeo resultado
+    1st ciclo: assign first operand
+    2nd ciclo: assign second operand
+    3rd ciclo: assign first opcode
+    4th ciclo: check result
     */
     always @(negedge clk)
     begin
         if(test_start)
         begin
             case(i)
-            2'b00: //CARGO A
+            2'b00: //load first operand
                 begin
                     i_switches <= $urandom; 
                     //i_switches <= 8'b11001100;
@@ -87,7 +87,7 @@ module tb_controller();
                     $display("El dato A es: %bb = %dd = %hh", i_switches, $signed(i_switches), i_switches); 
                 end
 
-            2'b01: //CARGO B
+            2'b01: //load second operand
                 begin
                     i_switches <= $urandom;
                     //i_switches <= 8'b11111110;
@@ -95,7 +95,7 @@ module tb_controller();
                     #1
                     $display("El dato B es: %bb = %dd = %hh", i_switches, $signed(i_switches), i_switches);
                 end
-            2'b10: //CARGO OP
+            2'b10: //load opcode
                 begin
                     //i_switches <= {2'b00, SUB};
                     //i_switches <= {2'b00, SRA};
@@ -104,7 +104,7 @@ module tb_controller();
                     #1
                     $display("La operacion es: %bb = %dd = %hh", i_switches, i_switches, i_switches);
                 end
-            2'b11: //MUESTRO RESULTADO
+            2'b11: //show result
                 begin 
                     #1
                     $display("El resultado es: %bb = %dd = %hh ", o_result, $signed(o_result), o_result);
