@@ -68,10 +68,10 @@ module tb_controller();
     always #10 clk = ~clk;
 
     /*
-    1st ciclo: assign first operand
-    2nd ciclo: assign second operand
-    3rd ciclo: assign first opcode
-    4th ciclo: check result
+    1st cycle: assign first operand
+    2nd cycle: assign second operand
+    3rd cycle: assign first opcode
+    4th cycle: check result
     */
     always @(negedge clk)
     begin
