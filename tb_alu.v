@@ -19,17 +19,17 @@ module alu_tb;
     localparam NOR = 6'b100111;
 
     // inputs
-    reg signed [NB_DATA-1:0] i_op_1;
-    reg signed [NB_DATA-1:0] i_op_2;
-    reg [NB_OPCODE-1:0] i_opcode;
+    reg signed [NB_DATA-1:0] operandA;
+    reg signed [NB_DATA-1:0] operandB;
+    reg [NB_OPCODE-1:0] opcode;
   	reg [31:0] operation_name;
-    // outputs
+    // output
   	wire signed [NB_DATA-1:0] o_result;
-    wire _carry;
+
     // TB signals
     reg clk;
     reg test_start;
-    integer i, j; //counters
+    integer i, j; //counters  i-> number of operations completed j-> number of iteration
 
     // Generate test signals
     initial begin
@@ -38,9 +38,9 @@ module alu_tb;
       test_start = 1'b0;
       i = {NB_INTEGER {1'b0}};
       j = {NB_INTEGER {1'b0}};
-      i_op_1 = {NB_DATA {1'b0}};
-      i_op_2 = {NB_DATA {1'b0}};
-      i_opcode = {NB_OPCODE {1'b0}};
+      operandA = {NB_DATA {1'b0}};
+      operandB = {NB_DATA {1'b0}};
+      opcode = {NB_OPCODE {1'b0}};
 
       #10
       test_start = 1'b1;
@@ -49,34 +49,34 @@ module alu_tb;
       $finish;
     end
 
-    // create instance of "alu" module and assign input and output signals of "alu" to the corresponding signals of benchtest
+    // create instance of "alu" module and assign input and output signals of "alu" to the corresponding signals of benchtest  //.alu(controller)
     alu #(
       .NB_DATA(NB_DATA), 
       .NB_OPCODE(NB_OPCODE)
     )
     dut(
-        .i_op_1(i_op_1),
-        .i_op_2(i_op_2),
-        .i_opcode(i_opcode),
+        .i_op_1(operandA),
+        .i_op_2(operandB),
+        .i_opcode(opcode),
         .o_result(o_result)
     );
 
     //Clock generation
     always #10 clk = ~clk;
     
-    //Generation of random data 
+    //Generation of new random data after finishing all operations of each iteration ()
     always @(posedge clk)
     begin
         if(i%(CANT_OP+1) == 0)
             begin
-              i_op_1 <= $urandom; //random sin signo
-              i_op_2 <= $urandom;
+              operandA <= $urandom; // unsigned random 
+              operandB <= $urandom;
               j <= j + {{NB_INTEGER-1 {1'b0}}, 1'b1}; //j++
             
               #1
               $display("----------Iteration n°%d ----------", j);
-              $display("A = %bb = %dd = %hh ", i_op_1, i_op_1, i_op_1);
-              $display("B = %bb = %dd = %hh ", i_op_2, i_op_2, i_op_2);
+              $display("A = %bb = %dd = %hh ", operandA, operandA, operandA);
+              $display("B = %bb = %dd = %hh ", operandB, operandB, operandB);
             end
     end
 
@@ -87,132 +87,132 @@ module alu_tb;
         begin
           i <= i + {{NB_INTEGER-1 {1'b0}}, 1'b1}; //i+1
           operation_name = "";
-            case (i%(CANT_OP+1))
+            case (i%(CANT_OP+1))  //based on number of iteration decide what
                 {{NB_INTEGER-4 {1'b0}}, 4'b0001}://i == 1
                 begin
-                    i_opcode <=   ADD;
+                    opcode <=   ADD;
                   	operation_name = "ADD";
                     #1
                     $display("\t Operation: %s" , operation_name);
-                  	$display("\t \t Target result: %bb = %dd = %hh", i_op_1 + i_op_2, i_op_1 + i_op_2, i_op_1 + i_op_2);
+                  	$display("\t \t Target result: %bb = %dd = %hh", operandA + operandB, operandA + operandB, operandA + operandB);
                   	$display("\t \t ALU output: %bb = %dd = %hh", o_result, o_result, o_result);
-                    if(o_result != (i_op_1 + i_op_2))
+                    if(o_result != (operandA + operandB))
                     begin
                         $error("Error in ADD!");
                         $display("############# Test FAIL ############");
-                        $display("Result was %b and should be %b", o_result, i_op_1 + i_op_2);
+                        $display("Result was %b and should be %b", o_result, operandA + operandB);
                         $finish();
                     end
                 end
                 {{NB_INTEGER-4 {1'b0}}, 4'b0010}://i == 2
                 begin
-                    i_opcode <=   SUB;
+                    opcode <=   SUB;
                   	operation_name = "SUB";
                     #1
                     $display("\t Operation: %s" , operation_name);
-                  	$display("\t \t Target result: %bb = %dd = %hh", i_op_1 - i_op_2, i_op_1 - i_op_2, i_op_1 - i_op_2);
+                  	$display("\t \t Target result: %bb = %dd = %hh", operandA - operandB, operandA - operandB, operandA - operandB);
                   	$display("\t \t ALU output: %bb = %dd = %hh", o_result, o_result, o_result);
-                    if(o_result != (i_op_1 - i_op_2))
+                    if(o_result != (operandA - operandB))
                     begin
                         $error("Error in RESTA!");
                         $display("############# Test FAIL ############");
-                        $display("Result was %b and should be %b", o_result, i_op_1 - i_op_2);
+                        $display("Result was %b and should be %b", o_result, operandA - operandB);
                         $finish();
                     end
                 end
                 {{NB_INTEGER-4 {1'b0}}, 4'b0011}://i == 3
                 begin
-                    i_opcode <=   AND;
+                    opcode <=   AND;
                    	operation_name = "AND";
                     #1
                   	$display("\t Operation: %s" , operation_name);
-                    $display("\t \t Target result: %bb = %dd = %hh", i_op_1 & i_op_2, i_op_1 & i_op_2, i_op_1 & i_op_2);
+                    $display("\t \t Target result: %bb = %dd = %hh", operandA & operandB, operandA & operandB, operandA & operandB);
                   	$display("\t \t ALU output: %bb = %dd = %hh", o_result, o_result, o_result);
-                    if(o_result != (i_op_1 & i_op_2))
+                    if(o_result != (operandA & operandB))
                     begin
                         $error("Error in AND!");
                         $display("############# Test FAIL ############");
-                        $display("Result was %b and should be %b", o_result, i_op_1 & i_op_2);
+                        $display("Result was %b and should be %b", o_result, operandA & operandB);
                         $finish();
                     end
                 end
                 {{NB_INTEGER-4 {1'b0}}, 4'b0100}://i == 4
                 begin
-                    i_opcode <=   OR;
+                    opcode <=   OR;
                     operation_name = "OR";
                     #1
                     $display("\t Operation: %s" , operation_name);
-                    $display("\t \t Target result: %bb = %dd = %hh", i_op_1 | i_op_2, i_op_1 | i_op_2, i_op_1 | i_op_2);
+                    $display("\t \t Target result: %bb = %dd = %hh", operandA | operandB, operandA | operandB, operandA | operandB);
                   	$display("\t \t ALU output: %bb = %dd = %hh", o_result, o_result, o_result);
-                    if(o_result != (i_op_1 |i_op_2))
+                    if(o_result != (operandA |operandB))
                     begin
                         $error("Error in OR!");
                         $display("############# Test FAIL ############");
-                        $display("Result was %b and should be %b", o_result, i_op_1 | i_op_2);
+                        $display("Result was %b and should be %b", o_result, operandA | operandB);
                         $finish();
                     end
                 end
                 {{NB_INTEGER-4 {1'b0}}, 4'b0101}://i == 5
                 begin
-                    i_opcode <=   XOR;
+                    opcode <=   XOR;
                     operation_name = "XOR";
                     #1
                     $display("\t Operation: %s" , operation_name);
-                  	$display("\t \t Target result: %bb = %dd = %hh", i_op_1 ^ i_op_2, i_op_1 ^ i_op_2, i_op_1 ^ i_op_2);
+                  	$display("\t \t Target result: %bb = %dd = %hh", operandA ^ operandB, operandA ^ operandB, operandA ^ operandB);
                   	$display("\t \t ALU output: %bb = %dd = %hh", o_result, o_result, o_result);
-                    if(o_result != (i_op_1 ^ i_op_2))
+                    if(o_result != (operandA ^ operandB))
                     begin
                         $error("Error in XOR!");
                         $display("############# Test FAIL ############");
-                        $display("Result was %b and should be %b", o_result, i_op_1 ^ i_op_2);
+                        $display("Result was %b and should be %b", o_result, operandA ^ operandB);
                         $finish();
                     end
                 end
                 {{NB_INTEGER-4 {1'b0}}, 4'b0110}://i == 6
                 begin
-                    i_opcode <= SRA;
+                    opcode <= SRA;
                     operation_name = "SRA";
                     #1
                     $display("\t Operation: %s" , operation_name);
-                  	$display("\t \t Target result: %bb = %dd = %hh", i_op_1 >>> i_op_2, i_op_1 >>> i_op_2, i_op_1 >>> i_op_2);
+                  	$display("\t \t Target result: %bb = %dd = %hh", operandA >> operandB, operandA >> operandB, operandA >> operandB);
                   	$display("\t \t ALU output: %bb = %dd = %hh", o_result, o_result, o_result);
-                    if(o_result != (i_op_1 >>> i_op_2))
+                    if(o_result != (operandA >> operandB))
                     begin
                         $error("Error in SRA!");
                         $display("############# Test FAIL ############");
-                        $display("Result was %b and should be %b", o_result, i_op_1 >>> i_op_2);
+                        $display("Result was %b and should be %b", o_result, operandA >> operandB);
                         $finish();
                     end
                 end
                 {{NB_INTEGER-4 {1'b0}}, 4'b0111}://i == 7
                 begin
-                    i_opcode <=   SRL;
+                    opcode <=   SRL;
                   	operation_name = "SRL";
                     #1
                     $display("\t Operation: %s" , operation_name);
-                  	$display("\t \t Target result: %bb = %dd = %hh", i_op_1 >> i_op_2, i_op_1 >> i_op_2, i_op_1 >> i_op_2);
+                  	$display("\t \t Target result: %bb = %dd = %hh", operandA >>> operandB, operandA >>> operandB, operandA >>> operandB);
                   	$display("\t \t ALU output: %bb = %dd = %hh", o_result, o_result, o_result);
-                    if(o_result != (i_op_1 >> i_op_2))
+                    if(o_result != (operandA >>> operandB))
                     begin
                         $error("Error in SRL!");
                         $display("############# Test FAIL ############");
-                        $display("Result was %b and should be %b", o_result, i_op_1 >> i_op_2);
+                        $display("Result was %b and should be %b", o_result, operandA >>> operandB);
                         $finish();
                     end
                 end
                 {{NB_INTEGER-4 {1'b0}}, 4'b1000}://i == 8
                 begin
-                    i_opcode <=   NOR;
+                    opcode <=   NOR;
                   	operation_name = "NOR";
                     #1
                     $display("\t Operation: %s" , operation_name);
-                  	$display("\t \t Target result: %bb = %dd = %hh",~(i_op_1 | i_op_2),~(i_op_1 | i_op_2), ~(i_op_1 | i_op_2));
+                  	$display("\t \t Target result: %bb = %dd = %hh",~(operandA | operandB),~(operandA | operandB), ~(operandA | operandB));
                   	$display("\t \t ALU output: %bb = %dd = %hh", o_result, o_result, o_result);
-                    if(o_result != ~(i_op_1 | i_op_2))
+                    if(o_result != ~(operandA | operandB))
                     begin
                         $error("Error in NOR!");
                         $display("############# Test FAIL ############");
-                        $display("Result was %b and should be %b", o_result, ~(i_op_1 | i_op_2));
+                        $display("Result was %b and should be %b", o_result, ~(operandA | operandB));
                         $finish();
                     end
                 end

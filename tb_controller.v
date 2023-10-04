@@ -2,10 +2,11 @@
 
 module tb_controller();
 
-    //local parameters
-    localparam  NB_DATA   = 8;
+    //sizes
+    localparam  NB_DATA       = 8;
     localparam  NB_OPCODE     = 6;
     localparam  N_PULSADORES  = 3;
+    // opcodes
     localparam  ADD = 6'b100000;
     localparam  SUB = 6'b100010;
     localparam  AND = 6'b100100;
@@ -14,17 +15,16 @@ module tb_controller();
     localparam  SRA = 6'b000011;
     localparam  SRL = 6'b000010;
     localparam  NOR = 6'b100111;
-
     //TB signals
     reg                         clk;
     reg                         test_start;
     reg [1:0]                   i;
-    reg [NB_OPCODE * 10 -1:0]   codeOperacion;
+    reg [NB_OPCODE * 10 -1:0]   codeOperacion; 
 
     //INPUTS
-    reg [NB_DATA-1 : 0]     i_switches;
-    reg [N_PULSADORES-1 : 0]    i_pulsadores;
-    reg                         i_reset;
+    reg [NB_DATA-1 : 0]         switchs;
+    reg [N_PULSADORES-1 : 0]    pulsadores;
+    reg                         reset;
 
     //OUTPUTS
     wire [NB_DATA-1 : 0] o_result;
@@ -34,14 +34,14 @@ module tb_controller();
     clk = 1'b0;
     i = 2'b00;
     test_start = 1'b0;
-    i_switches = {NB_DATA {1'b0}};
-    i_pulsadores = {N_PULSADORES {1'b0}};
-    i_reset = 1'b1;
+    switchs = {NB_DATA {1'b0}};
+    pulsadores = {N_PULSADORES {1'b0}};
+    reset = 1'b1;
     
     codeOperacion = {ADD, SUB, AND, OR, XOR, SRA, SRL, NOR};
     
     #20
-    i_reset = 1'b0;
+    reset = 1'b0;
 
     #80
     test_start = 1'b1;
@@ -58,11 +58,12 @@ module tb_controller();
     )
     u_controller
     (
-        .i_switches     (i_switches),
+        .i_switches     (switchs),
         .i_clock        (clk),
-        .i_pulsadores   (i_pulsadores),
-        .o_result       (o_result),
-        .i_reset        (i_reset)
+        .i_pulsadores   (pulsadores),
+        .i_reset        (reset),
+        .o_result       (o_result)
+        
     );
 
     always #10 clk = ~clk;
@@ -70,7 +71,7 @@ module tb_controller();
     /*
     1st cycle: assign first operand
     2nd cycle: assign second operand
-    3rd cycle: assign first opcode
+    3rd cycle: assign opcode
     4th cycle: check result
     */
     always @(negedge clk)
@@ -80,29 +81,25 @@ module tb_controller();
             case(i)
             2'b00: //load first operand
                 begin
-                    i_switches <= $urandom; 
-                    //i_switches <= 8'b11001100;
-                    i_pulsadores <= {{N_PULSADORES-1 {1'b0}}, 1'b1}; //001
+                    switchs <= $urandom; 
+                    pulsadores <= {{N_PULSADORES-1 {1'b0}}, 1'b1}; //001
                     #1
-                    $display("El dato A es: %bb = %dd = %hh", i_switches, $signed(i_switches), i_switches); 
+                    $display("El dato A es: %bb = %dd = %hh", switchs, $signed(switchs), switchs); 
                 end
 
             2'b01: //load second operand
                 begin
-                    i_switches <= $urandom;
-                    //i_switches <= 8'b11111110;
-                    i_pulsadores <= i_pulsadores << 1'b1; //010
+                    switchs <= $urandom;
+                    pulsadores <= pulsadores << 1'b1; //010
                     #1
-                    $display("El dato B es: %bb = %dd = %hh", i_switches, $signed(i_switches), i_switches);
+                    $display("El dato B es: %bb = %dd = %hh", switchs, $signed(switchs), switchs);
                 end
             2'b10: //load opcode
                 begin
-                    //i_switches <= {2'b00, SUB};
-                    //i_switches <= {2'b00, SRA};
-                    i_switches <= codeOperacion[($urandom % 10) * NB_OPCODE +: NB_OPCODE];
-                    i_pulsadores <= i_pulsadores << 1'b1; //100
+                    switchs <= codeOperacion[($urandom % 10) * NB_OPCODE +: NB_OPCODE];
+                    pulsadores <= pulsadores << 1'b1; //100
                     #1
-                    $display("La operacion es: %bb = %dd = %hh", i_switches, i_switches, i_switches);
+                    $display("La operacion es: %bb = %dd = %hh", switchs, switchs, switchs);
                 end
             2'b11: //show result
                 begin 
@@ -110,7 +107,6 @@ module tb_controller();
                     $display("El resultado es: %bb = %dd = %hh ", o_result, $signed(o_result), o_result);
                     $display("----------------------------------------------------");
                 end
-
             default:
                 begin
                     i <= 2'b00;

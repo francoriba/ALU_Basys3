@@ -10,50 +10,50 @@ module controller
 )
 (
     input wire signed   [NB_DATA-1:0]           i_switches,
-    input wire                                  i_clock,    
     input wire          [N_PULSADORES-1:0]      i_pulsadores,
+    input wire                                  i_clock,    
     input wire                                  i_reset,
     output wire signed  [NB_DATA-1:0]           o_result
 );
-    
-    reg signed [NB_DATA-1:0]   i_op_1;
-    reg signed [NB_DATA-1:0]   i_op_2;
-    reg [NB_OPCODE-1:0]        i_opcode;
+    // internal registers to store inputs
+    reg signed [NB_DATA-1:0]   operandA;
+    reg signed [NB_DATA-1:0]   operandB;
+    reg [NB_OPCODE-1:0]        opcode;
     
     always @(posedge i_clock)
     begin
         if(i_reset)
-        begin
-            i_op_1 <= {NB_DATA {1'b0}};
-            i_op_2 <= {NB_DATA {1'b0}};
-            i_opcode <= {NB_OPCODE {1'b0}};
-        end
+            begin
+                operandA <= {NB_DATA {1'b0}};
+                operandB <= {NB_DATA {1'b0}};
+                opcode <= {NB_OPCODE {1'b0}};
+            end
         else
-        begin
-            case(i_pulsadores)//poner reset
-                {{N_PULSADORES-3 {1'b0}}, 3'b001}: i_op_1 <= i_switches; //pulsador 1: switches -> operando1 
-                {{N_PULSADORES-3 {1'b0}}, 3'b010}: i_op_2 <= i_switches; //pulsador 2: switches -> operando2 
-                {{N_PULSADORES-3 {1'b0}}, 3'b100}: i_opcode <= i_switches; //pulsador 2: switches -> opcode
-                default: // by default we keep the previous values 
-                begin
-                    i_op_1 <= i_op_1;
-                    i_op_2 <= i_op_2;
-                    i_opcode <= i_opcode;
-                end
-                endcase
-        end
+            begin
+                case(i_pulsadores)
+                    {{N_PULSADORES-3 {1'b0}}, 3'b001}: operandA <= i_switches; 
+                    {{N_PULSADORES-3 {1'b0}}, 3'b010}: operandB <= i_switches; 
+                    {{N_PULSADORES-3 {1'b0}}, 3'b100}: opcode <= i_switches; //pulsador 2: switches -> opcode
+                    default: // by default we keep the previous values 
+                    begin
+                        operandA <= operandA;
+                        operandB <= operandB;
+                        opcode <= opcode;
+                    end
+                    endcase
+            end
     end
     
     alu
     #(
         .NB_DATA    (NB_DATA),
-        .NB_OPCODE      (NB_OPCODE)
+        .NB_OPCODE  (NB_OPCODE)
     )
     dut
     (
-        .i_op_1 (i_op_1),
-        .i_op_2 (i_op_2),             
-        .i_opcode(i_opcode),
+        .i_op_1 (operandA),
+        .i_op_2 (operandB),             
+        .i_opcode(opcode),
         .o_result(o_result)
     );
 endmodule
