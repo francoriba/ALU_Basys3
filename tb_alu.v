@@ -174,13 +174,13 @@ module alu_tb;
                     operation_name = "SRA";
                     #1
                     $display("\t Operation: %s" , operation_name);
-                  	$display("\t \t Target result: %bb = %dd = %hh", operandA >> operandB, operandA >> operandB, operandA >> operandB);
+                  	$display("\t \t Target result: %bb = %dd = %hh", operandA >>> operandB, operandA >>> operandB, operandA >>> operandB);
                   	$display("\t \t ALU output: %bb = %dd = %hh", o_result, o_result, o_result);
-                    if(o_result != (operandA >> operandB))
+                    if(o_result != (operandA >>> operandB))
                     begin
                         $error("Error in SRA!");
                         $display("############# Test FAIL ############");
-                        $display("Result was %b and should be %b", o_result, operandA >> operandB);
+                        $display("Result was %b and should be %b", o_result, operandA >>> operandB);
                         $finish();
                     end
                 end
@@ -190,13 +190,13 @@ module alu_tb;
                   	operation_name = "SRL";
                     #1
                     $display("\t Operation: %s" , operation_name);
-                  	$display("\t \t Target result: %bb = %dd = %hh", operandA >>> operandB, operandA >>> operandB, operandA >>> operandB);
+                  	$display("\t \t Target result: %bb = %dd = %hh", operandA >> operandB, operandA >> operandB, operandA >> operandB);
                   	$display("\t \t ALU output: %bb = %dd = %hh", o_result, o_result, o_result);
-                    if(o_result != (operandA >>> operandB))
+                    if(o_result != (operandA >> operandB))
                     begin
                         $error("Error in SRL!");
                         $display("############# Test FAIL ############");
-                        $display("Result was %b and should be %b", o_result, operandA >>> operandB);
+                        $display("Result was %b and should be %b", o_result, operandA >> operandB);
                         $finish();
                     end
                 end

@@ -32,7 +32,7 @@ module tb_controller();
     initial begin
     #0
     clk = 1'b0;
-    i = 2'b00;
+    i = 2'b00; //clock counter
     test_start = 1'b0;
     switchs = {NB_DATA {1'b0}};
     pulsadores = {N_PULSADORES {1'b0}};
