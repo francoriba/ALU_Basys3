@@ -22,17 +22,18 @@ localparam  NOR = 6'b100111;
 reg signed [NB_DATA-1 : 0] result; //register for storing result
 assign o_result = result;
 
+
 //combinational logic bock
 always @(*)
 begin
     case (i_opcode)
-        ADD : result = i_op_1 + i_op_2;    
+        ADD : result = i_op_1 + i_op_2;   
         SUB : result = i_op_1 - i_op_2;    
       	AND : result= i_op_1 & i_op_2;    
         OR  : result = i_op_1 | i_op_2;    
-        XOR : result = i_op_1 ^ i_op_2;    
-        SRA : result = i_op_1 >> i_op_2;  
-        SRL : result = i_op_1 >>> i_op_2;   
+        XOR : result = i_op_1 ^ i_op_2;   
+        SRA : result = i_op_1 >>> i_op_2;  
+        SRL : result = i_op_1 >> i_op_2;   
         NOR : result = ~(i_op_1 | i_op_2); 
     default: result = {NB_DATA {1'b0}}; //non valid opcode -> output = 0
     endcase
